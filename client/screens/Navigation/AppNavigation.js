@@ -17,6 +17,7 @@ import Orders from "../Orders";
 import Dashboard from "../Admin/Dashboard";
 import CategoryPage from "../CategoryPage";
 import AdminOrders from "../Admin/AdminOrders";
+import Profile from "../Profile";
 const AppNavigation = () => {
   const Stack = createNativeStackNavigator();
   const [isAuth, setIsAuth] = useState(null);
@@ -63,6 +64,13 @@ const AppNavigation = () => {
             />
           </>
         )}
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            headerShown: false,
+          }}
+        />
         <Stack.Screen
           name="BottomTabs"
           component={BottomTabs}

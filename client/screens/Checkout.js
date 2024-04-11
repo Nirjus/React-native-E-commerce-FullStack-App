@@ -8,7 +8,7 @@ import {
   View,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { Feather, Ionicons, MaterialIcons } from "@expo/vector-icons";
@@ -25,6 +25,7 @@ const Checkout = () => {
   const [loading, setLoading] = useState(false);
 
   const navigation = useNavigation();
+  const route = useRoute();
   const dispatch = useDispatch();
   const { data } = useSelector((state) => state.cart);
   const { token } = useSelector((state) => state.user);
@@ -32,6 +33,9 @@ const Checkout = () => {
   useEffect(() => {
     if (data) {
       setCartItems(data);
+    }
+    if (route.params?.data) {
+      setCartItems([route.params?.data]);
     }
   }, [data]);
   const total = cartItems
@@ -89,16 +93,22 @@ const Checkout = () => {
             type: "ADD_ORDERS",
             payload: res.data.order,
           });
-          dispatch({
-            type: "SET_CART_DATA",
-            payload: [],
-          });
+          if (!route.params?.data) {
+            dispatch({
+              type: "SET_CART_DATA",
+              payload: [],
+            });
+          }
           setCurrentStep(4);
           navigation.navigate("OrderScreen");
         })
         .catch((error) => {
           setLoading(false);
           alert(error.response.data.message);
+        })
+        .finally(() => {
+          setCurrentStep(0);
+          setSelectedPayment("");
         });
     } catch (error) {
       setLoading(false);
@@ -134,7 +144,7 @@ const Checkout = () => {
       console.log(error);
     }
   };
-  console.log(selectedPament);
+  console.log(cartItems.length);
   return (
     <View style={{ flex: 1 }}>
       <Header

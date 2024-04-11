@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import Header from "../../components/Layout/Header";
 import PriceTaible from "../../components/Cart/PriceTaible";
@@ -35,30 +35,9 @@ const Cart = () => {
     <View style={styles.container}>
       <Header
         leftIcon={<Ionicons name="arrow-back-sharp" size={22} color="black" />}
-        rightIcon={
-          <View style={{ position: "relative" }}>
-            <Feather name="shopping-cart" size={24} color="black" />
-            <View
-              style={{
-                backgroundColor: "#f7143e",
-                height: 17,
-                width: 17,
-                borderRadius: 50,
-                justifyContent: "center",
-                alignItems: "center",
-                position: "absolute",
-                top: -4,
-                right: -4,
-              }}
-            >
-              <Text style={{ color: "#fff", fontWeight: "600", fontSize: 10 }}>
-                {data?.length}
-              </Text>
-            </View>
-          </View>
-        }
+        rightIcon={<FontAwesome name="user-o" size={22} color="black" />}
         rightOnClick={() => {
-          navigation.navigate("BottomTabs", { screen: "Cart" });
+          navigation.navigate("Profile");
         }}
         leftOnclick={() => {
           navigation.goBack();

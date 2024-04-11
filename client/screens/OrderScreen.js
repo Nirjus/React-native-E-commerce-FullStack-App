@@ -1,6 +1,5 @@
 import { View, Text, SafeAreaView, Image, Dimensions } from "react-native";
 import React, { useEffect } from "react";
-import LottieView from "lottie-react-native";
 import { useNavigation } from "@react-navigation/native";
 
 const OrderScreen = () => {
@@ -8,7 +7,7 @@ const OrderScreen = () => {
   useEffect(() => {
     setTimeout(() => {
       navigation.replace("BottomTabs", { screen: "Home" });
-    }, 2000);
+    }, 3000);
   }, []);
   return (
     <SafeAreaView style={{ flex: 1 }}>

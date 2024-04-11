@@ -69,6 +69,24 @@ const ProductDeatils = () => {
       Alert.alert("Item add to Cart");
     }
   };
+  const buyNowHandler = async () => {
+    const user = await AsyncStorage.getItem("@auth");
+    if (user === null) {
+      Alert.alert("Sign In required", "SignIn or create your Account", [
+        {
+          text: "SignIn",
+          onPress: () => navigation.navigate("Login"),
+        },
+        {
+          text: "Cancel",
+          onPress: () => console.log("Cancel"),
+        },
+      ]);
+    } else {
+      const item = { ...route.params.data, quantity };
+      navigation.navigate("Checkout", { data: item });
+    }
+  };
   return (
     <View style={{ flex: 1 }}>
       <Header
@@ -308,7 +326,7 @@ const ProductDeatils = () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={[styles.addToCartBtn, { backgroundColor: "#ef4731" }]}
-            onPress={() => addToCartHandler()}
+            onPress={() => buyNowHandler()}
             disabled={route.params.data.stock <= 0}
           >
             <Text style={styles.btnTxt}>

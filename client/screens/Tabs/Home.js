@@ -1,8 +1,9 @@
 import { ScrollView, StyleSheet, View, Text } from "react-native";
 import React, { useEffect, useState } from "react";
-import { AntDesign, Feather } from "@expo/vector-icons";
+import { AntDesign, FontAwesome } from "@expo/vector-icons";
 import axios from "axios";
 import DropDownPicker from "react-native-dropdown-picker";
+import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/Layout/Header";
 import Category from "../../components/Category";
 import Carousol from "../../components/Carousol";
@@ -11,6 +12,7 @@ import ProductsData from "../../components/Products/ProductsData";
 import TopSellingProducts from "../../components/Products/TopSellingProducts";
 
 const Home = () => {
+  const navigation = useNavigation();
   const [productsList, setProductList] = useState([]);
   const [topProductsList, setTopProductList] = useState([]);
   const [open, setOpen] = useState(false);
@@ -77,8 +79,10 @@ const Home = () => {
     <View style={{ flex: 1 }}>
       <Header
         leftIcon={<AntDesign name="menu-fold" size={22} color="#383838" />}
-        rightIcon={<Feather name="shopping-cart" size={22} color="#343434" />}
-        rightOnClick={() => {}}
+        rightIcon={<FontAwesome name="user-o" size={22} color="black" />}
+        rightOnClick={() => {
+          navigation.navigate("Profile");
+        }}
         leftOnclick={() => {}}
         search={true}
       />

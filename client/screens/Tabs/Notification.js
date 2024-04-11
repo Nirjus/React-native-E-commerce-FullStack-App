@@ -1,6 +1,6 @@
 import { FlatList, ScrollView, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { FontAwesome, Ionicons } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import Header from "../../components/Layout/Header";
 import { useNavigation } from "@react-navigation/native";
@@ -21,9 +21,9 @@ const Notification = () => {
     <View style={{ flex: 1 }}>
       <Header
         leftIcon={<Ionicons name="arrow-back-sharp" size={22} color="black" />}
-        rightIcon={<Feather name="shopping-cart" size={22} color="black" />}
+        rightIcon={<FontAwesome name="user-o" size={22} color="black" />}
         rightOnClick={() => {
-          navigation.navigate("BottomTabs", { screen: "Cart" });
+          navigation.navigate("Profile");
         }}
         leftOnclick={() => {
           navigation.goBack();

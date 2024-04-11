@@ -7,7 +7,6 @@ import {
 } from "@expo/vector-icons";
 import { useSelector } from "react-redux";
 import Home from "../Tabs/Home";
-import Profile from "../Tabs/Profile";
 import Notification from "../Tabs/Notification";
 import Cart from "../Tabs/Cart";
 const BottomTabs = () => {
@@ -44,20 +43,6 @@ const BottomTabs = () => {
           tabBarBadge: wishlist?.length,
           tabBarIcon: ({ size, color }) => (
             <Ionicons name="notifications-sharp" size={size} color={color} />
-          ),
-          headerShown: false,
-        }}
-      />
-      <Tabs.Screen
-        name="Profile"
-        component={Profile}
-        options={{
-          tabBarIcon: ({ size, color }) => (
-            <MaterialCommunityIcons
-              name="account-box"
-              size={size}
-              color={color}
-            />
           ),
           headerShown: false,
         }}

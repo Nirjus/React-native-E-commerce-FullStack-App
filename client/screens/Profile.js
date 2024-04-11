@@ -19,12 +19,13 @@ import axios from "axios";
 import { useNavigation } from "@react-navigation/native";
 import { useDispatch, useSelector } from "react-redux";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import Header from "../../components/Layout/Header";
-import BottomModal from "../../components/Layout/BottomModal";
+import Header from "../components/Layout/Header";
+import BottomModal from "../components/Layout/BottomModal";
 
 const Profile = () => {
   const navigation = useNavigation();
   const dispatch = useDispatch();
+  const { data } = useSelector((state) => state.cart);
   const [openModal, setOpenModal] = useState(false);
   const [userinfo, setUserinfo] = useState({});
 
@@ -35,29 +36,32 @@ const Profile = () => {
       navigation.navigate("Login");
     } else {
       setUserinfo(user);
-      const getAllAddress = async () => {
-        await axios
-          .get("/address/getMy-address", {
-            headers: {
-              "Content-Type": "application/json",
-              Authorization: token,
-            },
-          })
-          .then((res) => {
-            dispatch({
-              type: "LOAD_ADDRESS",
-              payload: res.data.addressArray,
-            });
-          })
-          .catch((error) => {
-            Alert.alert(error.response.data.message);
-          });
-      };
-      if (addresses.length === 0) {
-        getAllAddress();
-      }
     }
-  }, [user, addresses]);
+  }, [user]);
+
+  useEffect(() => {
+    const getAllAddress = async () => {
+      await axios
+        .get("/address/getMy-address", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: token,
+          },
+        })
+        .then((res) => {
+          dispatch({
+            type: "LOAD_ADDRESS",
+            payload: res.data.addressArray,
+          });
+        })
+        .catch((error) => {
+          Alert.alert(error.response.data.message);
+        });
+    };
+    if (addresses.length === 0) {
+      getAllAddress();
+    }
+  }, [addresses]);
 
   useEffect(() => {
     const loadOrders = async () => {
@@ -108,7 +112,30 @@ const Profile = () => {
           leftIcon={
             <Ionicons name="arrow-back-sharp" size={22} color="black" />
           }
-          rightIcon={<Feather name="shopping-cart" size={22} color="black" />}
+          rightIcon={
+            <View style={{ position: "relative" }}>
+              <Feather name="shopping-cart" size={24} color="black" />
+              <View
+                style={{
+                  backgroundColor: "#f7143e",
+                  height: 17,
+                  width: 17,
+                  borderRadius: 50,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  position: "absolute",
+                  top: -4,
+                  right: -4,
+                }}
+              >
+                <Text
+                  style={{ color: "#fff", fontWeight: "600", fontSize: 10 }}
+                >
+                  {data?.length}
+                </Text>
+              </View>
+            </View>
+          }
           rightOnClick={() => {
             navigation.navigate("BottomTabs", { screen: "Cart" });
           }}
@@ -156,7 +183,7 @@ const Profile = () => {
               />
             ) : (
               <Image
-                source={require("../../assets/images/shopping.png")}
+                source={require("../assets/images/shopping.png")}
                 style={styles.img}
               />
             )}

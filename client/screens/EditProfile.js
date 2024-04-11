@@ -69,7 +69,7 @@ const EditProfile = () => {
           setLoading(false);
           Alert.alert(res.data.message);
           setUserInfo(res.data.user);
-          navigation.navigate("BottomTabs", { screen: "Profile" });
+          navigation.navigate("Profile");
         })
         .catch((error) => {
           setLoading(false);
@@ -105,7 +105,7 @@ const EditProfile = () => {
             avatarUrl: avatar.avatarUrl,
             selected: false,
           });
-          navigation.navigate("BottomTabs", { screen: "Profile" });
+          navigation.navigate("Profile");
         })
         .catch((error) => {
           setLoading(false);
@@ -152,7 +152,7 @@ const EditProfile = () => {
           setLoading(false);
           Alert.alert(res.data.message);
           setUserInfo(res.data.user);
-          navigation.navigate("BottomTabs", { screen: "Profile" });
+          navigation.navigate("Profile");
         })
         .catch((error) => {
           setLoading(false);
