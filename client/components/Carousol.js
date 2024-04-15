@@ -52,7 +52,7 @@ const Carousol = ({ image }) => {
             style={styles.imgContainer}
             onPress={() => alert(img._id)}
           >
-            <Image source={{ uri: img.url }} style={styles.img} />
+            <Image source={{ uri: img?.bannerImage?.url }} style={styles.img} />
             {/* <Text>{img.txt}</Text> */}
           </TouchableOpacity>
         ))}
@@ -84,16 +84,15 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   imgContainer: {
-    borderRadius: 10,
     width: width,
     justifyContent: "center",
     alignItems: "center",
   },
   img: {
-    width: "90%",
+    width: "95%",
     height: 200,
     objectFit: "cover",
-    borderRadius: 10,
+    borderRadius: 5,
   },
   wrapDot: {
     flexDirection: "row",

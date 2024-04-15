@@ -1,6 +1,8 @@
 import { Router } from "express";
 import { rateLimit } from "express-rate-limit";
 import {
+  deleteUser,
+  getAllUsers,
   getProfile,
   loginController,
   logout,
@@ -13,6 +15,7 @@ import {
 } from "../Controller/userController.js";
 import isLogin from "../middleware/islogin.js";
 import { singleUpload } from "../middleware/multer.js";
+import isAdmin from "../middleware/isAdmin.js";
 
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
@@ -35,4 +38,7 @@ userRoutes.put("/update-password", isLogin, updatePassword);
 userRoutes.put("/update-avatar", isLogin, singleUpload, updateAvatar);
 
 userRoutes.post("/forgot-password", resetPassword);
+// ================  Admin Routes =======================
+userRoutes.get("/getAll-users", getAllUsers);
+userRoutes.delete("/delete/:id", isLogin, isAdmin, deleteUser);
 export default userRoutes;

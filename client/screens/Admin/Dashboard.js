@@ -40,19 +40,28 @@ const Dashboard = () => {
             Welcome to Admin Dashboard
           </Text>
         </View>
-        <Pressable style={styles.btn}>
+        <Pressable
+          style={styles.btn}
+          onPress={() => navigation.navigate("AdminProducts")}
+        >
           <FontAwesome5 name="house-user" size={21} color="black" />
           <Text style={{ color: "#000", fontSize: 17, fontWeight: "500" }}>
             Manage Product
           </Text>
         </Pressable>
-        <Pressable style={styles.btn}>
+        <Pressable
+          style={styles.btn}
+          onPress={() => navigation.navigate("AdminCategory")}
+        >
           <MaterialIcons name="category" size={21} color="black" />
           <Text style={{ color: "#000", fontSize: 17, fontWeight: "500" }}>
             Manage Categories
           </Text>
         </Pressable>
-        <Pressable style={styles.btn}>
+        <Pressable
+          style={styles.btn}
+          onPress={() => navigation.navigate("AdminUsers")}
+        >
           <FontAwesome5 name="users-cog" size={21} color="black" />
           <Text style={{ color: "#000", fontSize: 17, fontWeight: "500" }}>
             Manage Users
@@ -67,10 +76,13 @@ const Dashboard = () => {
             Manage Orders
           </Text>
         </Pressable>
-        <Pressable style={styles.btn}>
+        <Pressable
+          style={styles.btn}
+          onPress={() => navigation.navigate("AdminBanner")}
+        >
           <AntDesign name="appstore-o" size={21} color="black" />
           <Text style={{ color: "#000", fontSize: 17, fontWeight: "500" }}>
-            About App
+            App Settings
           </Text>
         </Pressable>
       </View>

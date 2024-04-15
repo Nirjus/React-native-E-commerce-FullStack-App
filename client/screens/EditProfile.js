@@ -10,6 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+import img from "../assets/images/shopping.png";
 import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
@@ -31,8 +32,8 @@ const EditProfile = () => {
   });
   const [oldPassword, setOldPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [name, setName] = useState(route.params.data.name);
-  const [contact, setContact] = useState(route.params.data.contact);
+  const [name, setName] = useState(route.params.data.name || "");
+  const [contact, setContact] = useState(route.params.data.contact || 0);
   const [loading, setLoading] = useState(false);
   const [page, setPage] = useState(1);
   const { token } = useSelector((state) => state.user);
@@ -192,7 +193,7 @@ const EditProfile = () => {
               }}
               onPress={() => pickImage()}
             >
-              {avatar ? (
+              {avatar.avatarUrl ? (
                 <Image source={{ uri: avatar.avatarUrl }} style={styles.img} />
               ) : (
                 <Image
@@ -202,7 +203,7 @@ const EditProfile = () => {
               )}
               <Feather
                 name="edit"
-                size={20}
+                size={17}
                 color="#ffffff"
                 style={{
                   position: "absolute",

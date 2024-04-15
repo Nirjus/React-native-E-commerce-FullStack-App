@@ -262,3 +262,43 @@ export const resetPassword = async (req, res, next) => {
     next(error);
   }
 };
+
+export const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await User.find({});
+
+    res.status(201).json({
+      success: true,
+      users,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+export const deleteUser = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const user = await User.findById(id);
+
+    if (!user) {
+      throw Error("User not found with this id");
+    }
+    if (user.role === "Admin") {
+      throw Error("User is Admin so user is not removable");
+    }
+    if (user.avatar.public_id) {
+      await cloudinary.v2.uploader.destroy(user.avatar.public_id);
+    }
+
+    await user.deleteOne();
+
+    res.status(201).json({
+      success: true,
+      message: "user deleted successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};

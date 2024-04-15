@@ -90,7 +90,7 @@ export const getSingleOrderDetails = async (req, res, next) => {
 
 export const getAllOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find({});
+    const orders = await Order.find({}).sort({ createdAt: -1 });
 
     return res.status(201).json({
       success: true,

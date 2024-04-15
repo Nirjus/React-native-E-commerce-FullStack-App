@@ -14,7 +14,7 @@ export const getAllProducts = async (req, res, next) => {
         $regex: category ? category : "",
         $options: "i",
       },
-    });
+    }).sort({ createdAt: -1 });
 
     return res.status(201).json({
       success: true,
@@ -66,18 +66,9 @@ export const getSingleProduct = async (req, res, next) => {
 
 export const createProduct = async (req, res, next) => {
   try {
-    const { name, description, price, stock, rating, offer, category } =
-      req.body;
+    const { name, description, price, stock, offer, category } = req.body;
 
-    if (
-      !name ||
-      !description ||
-      !price ||
-      !stock ||
-      !rating ||
-      !offer ||
-      !category
-    ) {
+    if (!name || !description || !price || !stock || !offer || !category) {
       throw Error("Please provide all information");
     }
     if (!req.file) {
@@ -99,7 +90,6 @@ export const createProduct = async (req, res, next) => {
       price: price,
       stock: stock,
       category: category,
-      rating: rating,
       offer: offer,
       images: [image],
     });
@@ -123,8 +113,7 @@ export const updateProduct = async (req, res, next) => {
     if (!product) {
       throw Error("Product not found with this Id");
     }
-    const { name, description, price, stock, rating, offer, category } =
-      req.body;
+    const { name, description, price, stock, offer, category } = req.body;
 
     if (name) {
       product.name = name;
@@ -137,9 +126,6 @@ export const updateProduct = async (req, res, next) => {
     }
     if (stock) {
       product.stock = stock;
-    }
-    if (rating) {
-      product.rating = rating;
     }
     if (offer) {
       product.offer = offer;
@@ -194,7 +180,7 @@ export const addProductImage = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Product Image updated",
+      message: "Product Image added",
       product,
     });
   } catch (error) {
@@ -290,7 +276,7 @@ export const deleteProductImage = async (req, res, next) => {
 
     return res.status(200).json({
       success: true,
-      message: "Product Image updated",
+      message: "Product Image deleted",
       product,
     });
   } catch (error) {

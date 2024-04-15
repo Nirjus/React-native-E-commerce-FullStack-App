@@ -47,7 +47,7 @@ const AdminOrders = () => {
         leftIcon={<Ionicons name="arrow-back-sharp" size={22} color="black" />}
         rightIcon={<FontAwesome name="user-o" size={22} color="black" />}
         rightOnClick={() => {
-          navigation.navigate("BottomTabs", { screen: "Profile" });
+          navigation.navigate("Profile");
         }}
         leftOnclick={() => {
           navigation.goBack();

@@ -1,6 +1,7 @@
 import {
   Alert,
   Dimensions,
+  FlatList,
   Image,
   ImageBackground,
   ScrollView,
@@ -9,7 +10,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,12 +23,15 @@ import {
 } from "@expo/vector-icons";
 import StarRating from "react-native-star-rating";
 import Header from "../components/Layout/Header";
+import axios from "axios";
+import ProductCard from "../components/Products/ProductCard";
 
 const ProductDeatils = () => {
   const { width } = Dimensions.get("window");
   const route = useRoute();
   const dispatch = useDispatch();
   const [quantity, setQuantity] = React.useState(1);
+  const [relatedItemList, setRelatedItemList] = useState([]);
   const navigation = useNavigation();
   const { data } = useSelector((state) => state.cart);
   const { wishlist } = useSelector((state) => state.wishlist);
@@ -87,6 +91,19 @@ const ProductDeatils = () => {
       navigation.navigate("Checkout", { data: item });
     }
   };
+  useEffect(() => {
+    const getProduct = async () => {
+      await axios
+        .get(`/product/getAll-products?category=${route.params?.data.category}`)
+        .then((res) => {
+          setRelatedItemList(res.data.products);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
+    getProduct();
+  }, []);
   return (
     <View style={{ flex: 1 }}>
       <Header
@@ -134,6 +151,7 @@ const ProductDeatils = () => {
               style={{
                 width: width,
                 height: width,
+                backgroundColor: "#fff",
               }}
               source={{ uri: img.url }}
               key={index}
@@ -334,6 +352,190 @@ const ProductDeatils = () => {
             </Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.reviewSection}>
+          <Text
+            style={{
+              fontWeight: "700",
+              fontSize: 15,
+              color: "#5a61ab",
+              marginTop: 10,
+              marginBottom: 5,
+            }}
+          >
+            Reviews
+          </Text>
+          <Text style={{ fontSize: 13, color: "#6e6e6e", marginBottom: 5 }}>
+            item Revied by
+          </Text>
+          {route.params?.data?.reviews.length !== 0 ? (
+            <>
+              {route.params?.data?.reviews.map((item, index) => (
+                <View style={{ marginBottom: 15 }} key={item._id}>
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      gap: 8,
+                      alignItems: "center",
+                    }}
+                  >
+                    <View
+                      style={{
+                        height: 40,
+                        width: 40,
+                        borderRadius: 100,
+                        justifyContent: "center",
+                        alignItems: "center",
+                        backgroundColor:
+                          index % 2 === 0 ? "#9f9f9f" : "#8be9ac",
+                      }}
+                    >
+                      <Text>{item?.name.substring(0, 1)}</Text>
+                    </View>
+                    <Text
+                      style={{
+                        color: "#000",
+                        fontWeight: "bold",
+                        fontSize: 16,
+                        fontStyle: "italic",
+                      }}
+                    >
+                      {item?.name}
+                    </Text>
+                  </View>
+                  <View style={styles.reviewContentSection}>
+                    <View
+                      style={{
+                        flexDirection: "row",
+                        alignItems: "center",
+                        gap: 20,
+                      }}
+                    >
+                      <View style={{ width: 100 }}>
+                        <StarRating
+                          disabled={true}
+                          maxStars={5}
+                          starSize={18}
+                          rating={item?.rating}
+                          fullStarColor={"#ffb700"}
+                          halfStarEnabled={true}
+                        />
+                      </View>
+
+                      <Text
+                        style={{
+                          color: "#ffb700",
+                          fontSize: 13,
+                          fontWeight: "600",
+                        }}
+                      >
+                        {item?.rating} ⭐ Rating
+                      </Text>
+                    </View>
+                    <Text
+                      style={{
+                        fontSize: 13,
+                        padding: 5,
+                        textAlign: "justify",
+                        color: "#000",
+                      }}
+                    >
+                      {item?.comment}
+                    </Text>
+                  </View>
+                </View>
+              ))}
+            </>
+          ) : (
+            <Text
+              style={{
+                marginVertical: 10,
+                textAlign: "center",
+                fontWeight: "bold",
+                color: "#000",
+              }}
+            >
+              {route.params?.data?.reviews.length} reviews till now!
+            </Text>
+          )}
+          {/* <View style={{ marginBottom: 15 }}>
+            <View
+              style={{ flexDirection: "row", gap: 8, alignItems: "center" }}
+            >
+              <View
+                style={{
+                  height: 40,
+                  width: 40,
+                  borderRadius: 100,
+                  justifyContent: "center",
+                  alignItems: "center",
+                  backgroundColor: "#9f9f9f",
+                }}
+              >
+                <Text>P</Text>
+              </View>
+              <Text
+                style={{
+                  color: "#000",
+                  fontWeight: "bold",
+                  fontSize: 16,
+                  fontStyle: "italic",
+                }}
+              >
+                Prakash raj
+              </Text>
+            </View>
+            <View style={styles.reviewContentSection}>
+              <View
+                style={{
+                  flexDirection: "row",
+                  alignItems: "center",
+                  gap: 20,
+                }}
+              >
+                <View style={{ width: 100 }}>
+                  <StarRating
+                    disabled={true}
+                    maxStars={5}
+                    starSize={18}
+                    rating={4}
+                    fullStarColor={"#ffb700"}
+                    halfStarEnabled={true}
+                  />
+                </View>
+
+                <Text
+                  style={{ color: "#ffb700", fontSize: 13, fontWeight: "600" }}
+                >
+                  4 ⭐ Rating
+                </Text>
+              </View>
+              <Text
+                style={{
+                  fontSize: 13,
+                  padding: 5,
+                  textAlign: "justify",
+                  color: "#000",
+                }}
+              >
+                Lorem Ipsum is simply dummy text of the printing and typesetting
+                industry. Lorem Ipsum has been the industry's standard dummy
+                text ever since the 1500s, when an unknown printer took a galley
+                of type and scrambled it to make a type specimen book.
+              </Text>
+            </View>
+          </View> */}
+        </View>
+        <View style={styles.relatedItems}>
+          <Text style={styles.relatedItemHeader}>Related Items</Text>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicato={false}
+            data={relatedItemList}
+            renderItem={({ item, index }) => (
+              <ProductCard product={item} key={item?._id} />
+            )}
+          />
+        </View>
       </ScrollView>
     </View>
   );
@@ -407,5 +609,32 @@ const styles = StyleSheet.create({
     backgroundColor: "#07b507",
     borderRadius: 5,
     padding: 5,
+  },
+  reviewSection: {
+    marginTop: 15,
+    backgroundColor: "#f0f1fe",
+    width: "100%",
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    alignSelf: "center",
+    elevation: 5,
+  },
+  reviewContentSection: {
+    backgroundColor: "#b2b2b236",
+    padding: 7,
+    borderRadius: 10,
+    height: "auto",
+    width: 250,
+    marginLeft: 40,
+  },
+  relatedItems: {
+    marginVertical: 20,
+  },
+  relatedItemHeader: {
+    marginVertical: 10,
+    marginHorizontal: 20,
+    fontWeight: "bold",
+    color: "#000",
+    fontSize: 17,
   },
 });

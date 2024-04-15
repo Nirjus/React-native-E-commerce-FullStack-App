@@ -5,6 +5,7 @@ const initialState = {
   user: undefined,
   token: "",
   isAuth: false,
+  updateUser: false,
 };
 
 export const userReducer = createReducer(initialState, (builder) => {
@@ -27,5 +28,9 @@ export const userReducer = createReducer(initialState, (builder) => {
     state.user = undefined;
     state.token = "";
     state.isAuth = false;
+  });
+  builder.addCase("UPDATE_USER", (state) => {
+    state.loading = false;
+    state.updateUser = !state.updateUser;
   });
 });

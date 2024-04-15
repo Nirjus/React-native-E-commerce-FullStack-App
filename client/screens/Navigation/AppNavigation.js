@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BottomTabs from "./BottomTabs";
 import ProductDeatils from "../ProductDeatils";
 import About from "../About";
@@ -18,10 +18,18 @@ import Dashboard from "../Admin/Dashboard";
 import CategoryPage from "../CategoryPage";
 import AdminOrders from "../Admin/AdminOrders";
 import Profile from "../Profile";
+import AdminProducts from "../Admin/AdminProducts";
+import Product from "../Admin/Product";
+import AdminCategory from "../Admin/AdminCategory";
+import Category from "../Admin/Category";
+import AdminUsers from "../Admin/AdminUsers";
+import UserProfile from "../Admin/UserProfile";
+import AdminBanner from "../Admin/AdminBanner";
 const AppNavigation = () => {
   const Stack = createNativeStackNavigator();
   const [isAuth, setIsAuth] = useState(null);
   const dispatch = useDispatch();
+  const { isAuth: auth } = useSelector((state) => state.user);
   useEffect(() => {
     const getUserLocalData = async () => {
       let data = await AsyncStorage.getItem("@auth");
@@ -42,7 +50,7 @@ const AppNavigation = () => {
     };
 
     getUserLocalData();
-  }, []);
+  }, [auth]);
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName="BottomTabs">
@@ -146,6 +154,55 @@ const AppNavigation = () => {
         <Stack.Screen
           name="AdminOrders"
           component={AdminOrders}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="AdminProducts"
+          component={AdminProducts}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="ProductWorks"
+          component={Product}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="AdminCategory"
+          component={AdminCategory}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="CategoryWorks"
+          component={Category}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="AdminUsers"
+          component={AdminUsers}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="UserProfile"
+          component={UserProfile}
+          options={{
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="AdminBanner"
+          component={AdminBanner}
           options={{
             headerShown: false,
           }}

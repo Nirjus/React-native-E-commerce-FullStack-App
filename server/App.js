@@ -9,6 +9,7 @@ import productRoutes from "./routes/productRouter.js";
 import categoryRoutes from "./routes/categoryRouter.js";
 import addressRoutes from "./routes/addressRouter.js";
 import orderRoutes from "./routes/orderRouter.js";
+import bannerRoutes from "./routes/bannerRoute.js";
 const App = express();
 
 App.use(helmet());
@@ -33,6 +34,7 @@ App.use("/api/v1/product", productRoutes);
 App.use("/api/v1/category", categoryRoutes);
 App.use("/api/v1/address", addressRoutes);
 App.use("/api/v1/order", orderRoutes);
+App.use("/api/v1/banner", bannerRoutes);
 
 App.use((error, req, res, next) => {
   return res.status(500).send({

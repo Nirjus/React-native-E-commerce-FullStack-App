@@ -32,14 +32,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalContainer: {
-    width: 200,
-    height: 200,
+    width: 150,
+    height: 150,
     backgroundColor: "white",
     borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
     flexDirection: "column",
-    gap: 10,
+    gap: 20,
     elevation: 5,
   },
   loadingTxt: {

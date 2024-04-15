@@ -7,7 +7,6 @@ import { useNavigation } from "@react-navigation/native";
 import Header from "../../components/Layout/Header";
 import Category from "../../components/Category";
 import Carousol from "../../components/Carousol";
-import { Carousolimage } from "../../data/seedData";
 import ProductsData from "../../components/Products/ProductsData";
 import TopSellingProducts from "../../components/Products/TopSellingProducts";
 
@@ -18,6 +17,7 @@ const Home = () => {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
   const [category, setCategory] = useState([]);
+  const [banners, setBanners] = useState([]);
   const [items, setItems] = useState([{ label: "", value: "" }]);
   useEffect(() => {
     const getCategory = async () => {
@@ -75,6 +75,14 @@ const Home = () => {
     };
     getProduct();
   }, []);
+  useEffect(() => {
+    const getAllBanner = async () => {
+      await axios.get("/banner/getAll-banner").then((res) => {
+        setBanners(res.data.banners);
+      });
+    };
+    getAllBanner();
+  }, []);
   return (
     <View style={{ flex: 1 }}>
       <Header
@@ -88,7 +96,7 @@ const Home = () => {
       />
       <ScrollView>
         <Category category={category} />
-        <Carousol image={Carousolimage} />
+        <Carousol image={banners} />
         <Text style={styles.fieldText}>Top Selling Products</Text>
         <TopSellingProducts topPrductList={topProductsList} />
 

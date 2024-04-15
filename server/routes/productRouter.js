@@ -22,15 +22,15 @@ productRoutes.get("/getTop-products", getTopProducts);
 productRoutes.get("/:id", getSingleProduct);
 productRoutes.put("/:id/review", isLogin, createReview);
 // ===================  Admin routes  =================
-productRoutes.post("/create", singleUpload, isLogin, isAdmin, createProduct);
+productRoutes.post("/create", isLogin, isAdmin, singleUpload, createProduct);
 
 productRoutes.put("/:id", isLogin, isAdmin, updateProduct);
 
 productRoutes.put(
   "/image/:id",
-  singleUpload,
   isLogin,
   isAdmin,
+  singleUpload,
   addProductImage
 );
 productRoutes.put(

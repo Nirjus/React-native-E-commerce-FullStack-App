@@ -11,10 +11,15 @@ import React, { useState } from "react";
 import { Entypo } from "@expo/vector-icons";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import ReviewModal from "./ReviewModal";
 
 const OrderItem = ({ order, isAdmin = false }) => {
   const dispatch = useDispatch();
   const { token } = useSelector((state) => state.user);
+  const [visible, setVisible] = useState({
+    visibility: false,
+    id: "",
+  });
 
   const updateStatusHandler = async () => {
     try {
@@ -89,7 +94,12 @@ const OrderItem = ({ order, isAdmin = false }) => {
             style={{ margin: 2, borderWidth: 1, borderColor: "#F0F0F0" }}
           >
             <View
-              style={{ flexDirection: "row", alignItems: "center", gap: 10 }}
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 10,
+                position: "relative",
+              }}
             >
               <Image
                 source={{ uri: item.product.images[0].url }}
@@ -114,6 +124,28 @@ const OrderItem = ({ order, isAdmin = false }) => {
                   Total Quantity: {item.qty}
                 </Text>
               </View>
+              {!isAdmin && (
+                <Pressable
+                  onPress={() =>
+                    setVisible({
+                      visibility: true,
+                      id: item?.product?._id,
+                    })
+                  }
+                  style={{
+                    position: "absolute",
+                    bottom: 5,
+                    right: 5,
+                    borderWidth: 0.3,
+                    width: 50,
+                    backgroundColor: "#f5f5f5",
+                  }}
+                >
+                  <Text style={{ fontSize: 10, textAlign: "center" }}>
+                    Give a Review
+                  </Text>
+                </Pressable>
+              )}
             </View>
           </View>
         )}
@@ -192,6 +224,12 @@ const OrderItem = ({ order, isAdmin = false }) => {
           </Pressable>
         </View>
       )}
+      <ReviewModal
+        token={token}
+        visible={visible.visibility}
+        onClose={() => setVisible({ visibility: false, id: "" })}
+        id={visible.id}
+      />
     </View>
   );
 };
