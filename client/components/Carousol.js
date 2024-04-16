@@ -50,7 +50,6 @@ const Carousol = ({ image }) => {
             activeOpacity={1}
             key={index}
             style={styles.imgContainer}
-            onPress={() => alert(img._id)}
           >
             <Image source={{ uri: img?.bannerImage?.url }} style={styles.img} />
             {/* <Text>{img.txt}</Text> */}

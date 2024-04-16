@@ -97,7 +97,6 @@ const Home = () => {
       <ScrollView>
         <Category category={category} />
         <Carousol image={banners} />
-        <Text style={styles.fieldText}>Top Selling Products</Text>
         <TopSellingProducts topPrductList={topProductsList} />
 
         <Text
