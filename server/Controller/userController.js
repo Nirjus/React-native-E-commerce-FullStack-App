@@ -24,22 +24,45 @@ export const userRegister = async (req, res, next) => {
       throw Error("user already exists with this email");
     }
 
-    const token = createJWT({ name, password, email }, jwtSecret, "10m");
+    const token = jwt.sign({ name, password, email }, jwtSecret, {
+      expiresIn: "5m",
+    });
 
     const emialData = {
       email,
       subject: "Account Activation Email",
       html: `
-         <h2> Hello ${name} </h2>
-         <p>Please click here to activate <a href="${backendUrl}/api/v1/user/verify/${token}" target="blank">click</a> your account </p>
-      `,
+         <div style="background-color: #f0f8ff; padding: 40px; border-radius: 10px; font-family: Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #cce7ff;">
+      <h2 style="color: #003366; text-align: center;">Hello, ${name}!</h2>
+      <p style="color: #003366; font-size: 16px; text-align: center;">Thank you for registering with us. Please click the button below to activate your account:</p>
+      <div style="text-align: center;">
+        <a href="${backendUrl}/api/v1/user/verify/${token}" style="text-decoration: none;">
+          <button style="
+            background-color: #28a745; 
+            color: white; 
+            padding: 15px 30px; 
+            border: none; 
+            border-radius: 5px; 
+            font-size: 18px; 
+            cursor: pointer; 
+            transition: background-color 0.3s ease;
+          " 
+          onmouseover="this.style.backgroundColor='#218838'"
+          onmouseout="this.style.backgroundColor='#28a745'">
+            Activate Account
+          </button>
+        </a>
+      </div>
+      <p style="color: #003366; font-size: 14px; text-align: center; margin-top: 20px;">If you did not request this, please ignore this email or contact our support team.</p>
+      <p style="color: #003366; font-size: 14px; text-align: center; margin-top: 20px;">Best regards,<br>ELearner</p>
+    </div>`,
     };
 
     await sendVerificationEmail(emialData);
 
     return res.status(201).json({
       success: true,
-      message: `Please visit your email:${email} to activate your account`,
+      message: `Please visit your email: ${email} to activate your account`,
     });
   } catch (error) {
     next(error);
@@ -69,10 +92,11 @@ export const processVerify = async (req, res, next) => {
       name: decoded.name,
     });
 
-    return res.status(201).send({
-      success: true,
-      message: "User registered successfull",
-    });
+    return res.status(201).send(`
+      <div style=" text-align: center; margin: 50px;">
+         <h1 style=" color: green;"> Success</h1>
+         <p>Your account is registerd successfully</p>
+      </div>`);
   } catch (error) {
     next(error);
   }
@@ -242,27 +266,94 @@ export const updateAvatar = async (req, res, next) => {
 
 export const resetPassword = async (req, res, next) => {
   try {
-    const { email, newPassword, answer } = req.body;
+    const { email, newPassword } = req.body;
 
-    if (!email || !newPassword || !answer) {
-      throw Error("Please provide all fields");
+    if (!email || !newPassword) {
+      throw Error("Please provide email and password");
     }
-    const user = await User.findOne({ email: email, answer: answer });
+    const user = await User.findOne({ email: email });
 
     if (!user) {
       throw Error("User not found!");
     }
-    user.password = newPassword;
-    await user.save();
+
+    const token = jwt.sign({ email, newPassword }, jwtSecret, {
+      expiresIn: "5m",
+    });
+
+    const emailData = {
+      email: user.email,
+      subject: "Forgot password ",
+      html: `
+          <div style="background-color: #e6f7ff; padding: 40px; border-radius: 10px; font-family: Arial, sans-serif; max-width: 600px; margin: auto;">
+      <h2 style="color: #003366;">Hello ${user?.name}</h2>
+      <p style="color: #003366;">Please click the button below to reset your password:</p>
+      <a href="${backendUrl}/api/v1/user/reset-password/${token}" style="text-decoration: none;">
+        <button style="background-color: #0059b3; color: white; padding: 10px 20px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">
+          Reset Password
+        </button>
+      </a>
+      <p style="color: #003366;">If you did not request a password reset, please ignore this email or contact support if you have questions.</p>
+    </div>
+      `,
+    };
+
+    await sendVerificationEmail(emailData);
     return res.status(201).json({
       success: true,
-      message: "Password reset successfull",
+      message: `Check your email: ${user.email} to reset your password.`,
     });
   } catch (error) {
     next(error);
   }
 };
 
+export const verifyForgetPasswordEmail = async (req, res, next) => {
+  try {
+    const { token } = req.params;
+
+    if (!token) {
+      return res.status(400).send(`
+        <div style="text-align: center; margin: 50px;">
+          <h1 style="color: red;">Error</h1>
+          <p>Token not found</p>
+        </div>
+        `);
+    }
+    const decoded = jwt.verify(token, jwtSecret);
+
+    if (!decoded) {
+      return res.status(400).send(`
+        <div style="text-align: center; margin: 50px;">
+          <h1 style="color: red;">Error</h1>
+          <p>Token expired</p>
+        </div>
+      `);
+    }
+    const user = await User.findOne({ email: decoded.email });
+
+    if (!user) {
+      return res.status(400).send(`
+        <div style="text-align: center; margin: 50px;">
+          <h1 style="color: red;">Error</h1>
+          <p>User not exists with this email</p>
+        </div>
+      `);
+    }
+    user.password = decoded.newPassword;
+
+    await user.save();
+
+    return res.status(200).send(`
+          <div style="text-align: center; margin: 50px;">
+          <h1 style="color: green;">Success</h1>
+          <p>Password successfully reset</p>
+        </div>
+      `);
+  } catch (error) {
+    next(error);
+  }
+};
 export const getAllUsers = async (req, res, next) => {
   try {
     const users = await User.find({});

@@ -40,13 +40,10 @@ const EditProfile = () => {
   const setUserInfo = async (data) => {
     await AsyncStorage.setItem("@auth", JSON.stringify(data));
 
-    const payload = {
-      user: data,
-      token,
-    };
     dispatch({
       type: "GETUSER_SUCCESS",
-      payload: payload,
+      user: data,
+      token: token,
     });
   };
   const handleUpdate = async () => {

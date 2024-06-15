@@ -8,9 +8,9 @@ import {
   TextInput,
   ScrollView,
   Alert,
+  Image,
 } from "react-native";
 import React, { useState } from "react";
-import axiso from "axios";
 import {
   MaterialCommunityIcons,
   FontAwesome5,
@@ -18,8 +18,9 @@ import {
   AntDesign,
 } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
-import Logo from "../components/Logo";
+import img from "../assets/images/CARTI.png";
 import Loader from "../components/Loader";
+import axios from "axios";
 
 const Register = () => {
   const [email, setEmail] = useState("");
@@ -29,29 +30,33 @@ const Register = () => {
   const [visible, setVisible] = useState(false);
   const navigation = useNavigation();
   const hamdleSubmit = async () => {
-    setLoading(true);
-    if (!name || !email || !password) {
-      alert("Plase add all fields");
+    try {
+      setLoading(true);
+      await axios
+        .post(
+          "/user/register",
+          { name, email, password },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
+        .then((res) => {
+          Alert.alert("Success", res.data.message);
+          setName("");
+          setEmail("");
+          setPassword("");
+          navigation.navigate("Login");
+        })
+        .catch((error) => {
+          alert(error.response.data.message);
+        })
+        .finally(() => setLoading(false));
+    } catch (error) {
       setLoading(false);
+      console.log(error);
     }
-    await axiso
-      .post(
-        "/user/register",
-        { name, email, password },
-        { withCredentials: true }
-      )
-      .then((res) => {
-        setLoading(false);
-        Alert.alert(res.data.message);
-        setName("");
-        setEmail("");
-        setPassword("");
-        navigation.navigate("Login");
-      })
-      .catch((error) => {
-        setLoading(false);
-        alert(error.response.data.message);
-      });
   };
   return (
     <SafeAreaView
@@ -59,7 +64,7 @@ const Register = () => {
     >
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={{ marginTop: 50, alignSelf: "center" }}>
-          <Logo height={40} width={40} />
+          <Image source={img} alt="imaeg" style={{ width: 200, height: 200 }} />
         </View>
         <KeyboardAvoidingView>
           <View>
@@ -67,15 +72,14 @@ const Register = () => {
               style={{
                 fontWeight: "bold",
                 fontSize: 17,
-                marginTop: 30,
                 color: "#041e42",
                 textAlign: "center",
               }}
             >
-              Register To your Account
+              Register as a new user
             </Text>
           </View>
-          <View style={{ marginTop: 70 }}>
+          <View style={{ marginTop: 10 }}>
             <View
               style={{
                 flexDirection: "row",
@@ -84,7 +88,7 @@ const Register = () => {
                 backgroundColor: "#D0D0D0",
                 paddingVertical: 5,
                 borderRadius: 5,
-                marginTop: 30,
+                marginTop: 10,
               }}
             >
               <FontAwesome
@@ -115,7 +119,7 @@ const Register = () => {
                 backgroundColor: "#D0D0D0",
                 paddingVertical: 5,
                 borderRadius: 5,
-                marginTop: 40,
+                marginTop: 10,
               }}
             >
               <MaterialCommunityIcons
@@ -146,7 +150,7 @@ const Register = () => {
                 backgroundColor: "#D0D0D0",
                 paddingVertical: 5,
                 borderRadius: 5,
-                marginTop: 40,
+                marginTop: 10,
               }}
             >
               {visible ? (

@@ -16,26 +16,6 @@ const Category = ({ category: categoryData }) => {
 
   return (
     <View style={{ paddingTop: 10 }}>
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          justifyContent: "space-between",
-          paddingHorizontal: 15,
-        }}
-      >
-        <Text
-          style={{
-            textTransform: "capitalize",
-            fontSize: 16,
-            fontWeight: "700",
-            color: "#535151",
-          }}
-        >
-          Categories
-        </Text>
-        <AntDesign name="arrowright" size={20} color="black" />
-      </View>
       <View style={styles.container}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {categoryData.map((category) => {

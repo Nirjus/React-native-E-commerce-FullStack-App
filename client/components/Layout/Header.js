@@ -44,15 +44,7 @@ const Header = ({
   }, [category, searchItem]);
   return (
     <View style={styles.mainContainer}>
-      <View
-        style={[
-          styles.container,
-          {
-            height: Platform.OS === "android" ? 60 : 100,
-            paddingTop: Platform.OS === "android" ? 0 : 40,
-          },
-        ]}
-      >
+      <View style={styles.container}>
         <TouchableOpacity
           style={styles.headerBtn}
           onPress={() => leftOnclick()}
@@ -175,6 +167,8 @@ const styles = StyleSheet.create({
   },
   container: {
     backgroundColor: "#ffffff",
+    paddingTop: 45,
+    paddingBottom: 10,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-around",

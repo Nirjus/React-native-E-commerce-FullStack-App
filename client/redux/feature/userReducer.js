@@ -12,14 +12,14 @@ export const userReducer = createReducer(initialState, (builder) => {
   builder.addCase("LOGIN_SUCCESS", (state, action) => {
     state.loading = false;
     state.isAuth = true;
-    state.token = action.payload.token;
-    state.user = action.payload.user;
+    state.token = action.token;
+    state.user = action.user;
   });
 
   builder.addCase("GETUSER_SUCCESS", (state, action) => {
     state.loading = false;
-    state.user = action.payload.user;
-    state.token = action.payload.token;
+    state.user = action.user;
+    state.token = action.token;
     state.isAuth = true;
   });
 

@@ -14,6 +14,8 @@ import React, { useEffect, useState } from "react";
 import { useNavigation, useRoute } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useDispatch, useSelector } from "react-redux";
+import * as Sharing from "expo-sharing";
+import * as FileSystem from "expo-file-system";
 import {
   Foundation,
   Ionicons,
@@ -104,6 +106,18 @@ const ProductDeatils = () => {
     };
     getProduct();
   }, []);
+  const shareImage = async (url) => {
+    try {
+      // Download the image to a local file
+      const fileUri = FileSystem.documentDirectory + "shared_image.jpg";
+      const { uri } = await FileSystem.downloadAsync(url, fileUri);
+
+      // Share the local file
+      await Sharing.shareAsync(uri);
+    } catch (error) {
+      console.error("Error sharing image:", error);
+    }
+  };
   return (
     <View style={{ flex: 1 }}>
       <Header
@@ -187,6 +201,9 @@ const ProductDeatils = () => {
                   </Text>
                 </View>
                 <TouchableOpacity
+                  onPress={() => {
+                    shareImage(img.url);
+                  }}
                   style={{
                     width: 40,
                     height: 40,
@@ -360,11 +377,19 @@ const ProductDeatils = () => {
               color: "#5a61ab",
               marginTop: 10,
               marginBottom: 5,
+              marginHorizontal: 10,
             }}
           >
             Reviews
           </Text>
-          <Text style={{ fontSize: 13, color: "#6e6e6e", marginBottom: 5 }}>
+          <Text
+            style={{
+              fontSize: 13,
+              marginHorizontal: 10,
+              color: "#6e6e6e",
+              marginBottom: 5,
+            }}
+          >
             item Revied by
           </Text>
           {route.params?.data?.reviews.length !== 0 ? (
@@ -374,8 +399,9 @@ const ProductDeatils = () => {
                   <View
                     style={{
                       flexDirection: "row",
-                      gap: 8,
-                      alignItems: "center",
+                      justifyContent: "space-between",
+                      alignItems: "flex-start",
+                      width: "100%",
                     }}
                   >
                     <View
@@ -391,56 +417,59 @@ const ProductDeatils = () => {
                     >
                       <Text>{item?.name.substring(0, 1)}</Text>
                     </View>
-                    <Text
-                      style={{
-                        color: "#000",
-                        fontWeight: "bold",
-                        fontSize: 16,
-                        fontStyle: "italic",
-                      }}
-                    >
-                      {item?.name}
-                    </Text>
-                  </View>
-                  <View style={styles.reviewContentSection}>
-                    <View
-                      style={{
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 20,
-                      }}
-                    >
-                      <View style={{ width: 100 }}>
-                        <StarRating
-                          disabled={true}
-                          maxStars={5}
-                          starSize={18}
-                          rating={item?.rating}
-                          fullStarColor={"#ffb700"}
-                          halfStarEnabled={true}
-                        />
-                      </View>
-
+                    <View style={{ width: "85%" }}>
                       <Text
                         style={{
-                          color: "#ffb700",
-                          fontSize: 13,
-                          fontWeight: "600",
+                          color: "#000",
+                          fontWeight: "bold",
+                          fontSize: 16,
+                          fontStyle: "italic",
                         }}
                       >
-                        {item?.rating} ⭐ Rating
+                        {item?.name}
                       </Text>
+                      <View style={styles.reviewContentSection}>
+                        <View
+                          style={{
+                            flexDirection: "row",
+                            alignItems: "center",
+                            gap: 20,
+                            marginBottom: 10,
+                          }}
+                        >
+                          <View style={{ width: 80 }}>
+                            <StarRating
+                              disabled={true}
+                              maxStars={5}
+                              starSize={15}
+                              rating={item?.rating}
+                              fullStarColor={"#ffb700"}
+                              halfStarEnabled={true}
+                            />
+                          </View>
+
+                          <Text
+                            style={{
+                              color: "#ffb700",
+                              fontSize: 13,
+                              fontWeight: "600",
+                            }}
+                          >
+                            {item?.rating} ⭐ Rating
+                          </Text>
+                        </View>
+                        <Text
+                          style={{
+                            fontSize: 13,
+
+                            textAlign: "justify",
+                            color: "#000",
+                          }}
+                        >
+                          {item?.comment}
+                        </Text>
+                      </View>
                     </View>
-                    <Text
-                      style={{
-                        fontSize: 13,
-                        padding: 5,
-                        textAlign: "justify",
-                        color: "#000",
-                      }}
-                    >
-                      {item?.comment}
-                    </Text>
                   </View>
                 </View>
               ))}
@@ -614,18 +643,16 @@ const styles = StyleSheet.create({
     marginTop: 15,
     backgroundColor: "#f0f1fe",
     width: "100%",
-    paddingHorizontal: 20,
+    paddingHorizontal: 10,
     borderRadius: 5,
     alignSelf: "center",
     elevation: 5,
   },
   reviewContentSection: {
-    backgroundColor: "#b2b2b236",
+    backgroundColor: "#ffffff",
     padding: 7,
     borderRadius: 10,
     height: "auto",
-    width: 250,
-    marginLeft: 40,
   },
   relatedItems: {
     marginVertical: 20,

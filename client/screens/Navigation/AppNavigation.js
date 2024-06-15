@@ -25,188 +25,75 @@ import Category from "../Admin/Category";
 import AdminUsers from "../Admin/AdminUsers";
 import UserProfile from "../Admin/UserProfile";
 import AdminBanner from "../Admin/AdminBanner";
+import ForgotPassword from "../Forgot-password";
+import axios from "axios";
 const AppNavigation = () => {
   const Stack = createNativeStackNavigator();
-  const [isAuth, setIsAuth] = useState(null);
   const dispatch = useDispatch();
-  const { isAuth: auth } = useSelector((state) => state.user);
+  const { user } = useSelector((state) => state.user);
+
+  const setUserInfo = async (data, token) => {
+    await AsyncStorage.setItem("@auth", JSON.stringify(data));
+    await AsyncStorage.setItem("@token", token);
+    dispatch({
+      type: "GETUSER_SUCCESS",
+      user: data,
+      token: token,
+    });
+  };
   useEffect(() => {
-    const getUserLocalData = async () => {
-      let data = await AsyncStorage.getItem("@auth");
+    const getuser = async () => {
       let token = await AsyncStorage.getItem("@token");
-      let loginData = JSON.parse(data);
-
-      const payload = {
-        user: loginData,
-        token: token,
-      };
-      dispatch({
-        type: "GETUSER_SUCCESS",
-        payload: payload,
-      });
-      console.log("Login Data", loginData);
-
-      setIsAuth(loginData);
+      await axios
+        .get("/user/me", {
+          headers: {
+            Authorization: token,
+          },
+        })
+        .then((res) => {
+          setUserInfo(res.data.user, token);
+        });
     };
-
-    getUserLocalData();
-  }, [auth]);
+    getuser();
+  }, []);
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="BottomTabs">
-        {!isAuth && (
+      <Stack.Navigator
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        {user ? (
           <>
-            <Stack.Screen
-              name="Login"
-              component={Login}
-              options={{
-                headerShown: false,
-              }}
-            />
-            <Stack.Screen
-              name="Register"
-              component={Register}
-              options={{
-                headerShown: false,
-              }}
-            />
+            <Stack.Screen name="BottomTabs" component={BottomTabs} />
+            <Stack.Screen name="Profile" component={Profile} />
+            <Stack.Screen name="About" component={About} />
+            <Stack.Screen name="ProductDetails" component={ProductDeatils} />
+            <Stack.Screen name="CategoryPage" component={CategoryPage} />
+            <Stack.Screen name="Checkout" component={Checkout} />
+            <Stack.Screen name="AddAddress" component={AddAddress} />
+            <Stack.Screen name="Address" component={Address} />
+            <Stack.Screen name="OrderScreen" component={OrderScreen} />
+            <Stack.Screen name="EditProfile" component={EditProfile} />
+            <Stack.Screen name="Orders" component={Orders} />
+            {/* {Admin Stack} */}
+            <Stack.Screen name="Admin" component={Dashboard} />
+            <Stack.Screen name="AdminOrders" component={AdminOrders} />
+            <Stack.Screen name="AdminProducts" component={AdminProducts} />
+            <Stack.Screen name="ProductWorks" component={Product} />
+            <Stack.Screen name="AdminCategory" component={AdminCategory} />
+            <Stack.Screen name="CategoryWorks" component={Category} />
+            <Stack.Screen name="AdminUsers" component={AdminUsers} />
+            <Stack.Screen name="UserProfile" component={UserProfile} />
+            <Stack.Screen name="AdminBanner" component={AdminBanner} />
+          </>
+        ) : (
+          <>
+            <Stack.Screen name="Login" component={Login} />
+            <Stack.Screen name="Register" component={Register} />
+            <Stack.Screen name="ForgotPassword" component={ForgotPassword} />
           </>
         )}
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="BottomTabs"
-          component={BottomTabs}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen name="About" component={About} />
-        <Stack.Screen
-          name="ProductDetails"
-          component={ProductDeatils}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="CategoryPage"
-          component={CategoryPage}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Checkout"
-          component={Checkout}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="AddAddress"
-          component={AddAddress}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Address"
-          component={Address}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="OrderScreen"
-          component={OrderScreen}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="EditProfile"
-          component={EditProfile}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Orders"
-          component={Orders}
-          options={{
-            headerShown: false,
-          }}
-        />
-        {/* {Admin Stack} */}
-        <Stack.Screen
-          name="Admin"
-          component={Dashboard}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="AdminOrders"
-          component={AdminOrders}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="AdminProducts"
-          component={AdminProducts}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="ProductWorks"
-          component={Product}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="AdminCategory"
-          component={AdminCategory}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="CategoryWorks"
-          component={Category}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="AdminUsers"
-          component={AdminUsers}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="UserProfile"
-          component={UserProfile}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="AdminBanner"
-          component={AdminBanner}
-          options={{
-            headerShown: false,
-          }}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );

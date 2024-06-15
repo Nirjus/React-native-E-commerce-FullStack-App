@@ -12,41 +12,28 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
 import {
   MaterialCommunityIcons,
   FontAwesome5,
   AntDesign,
 } from "@expo/vector-icons";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { useNavigation } from "@react-navigation/native";
 import Loader from "../components/Loader";
 import img from "../assets/images/CARTI.png";
-import { useNavigation } from "@react-navigation/native";
-
-const Login = () => {
+const ForgotPassword = () => {
   const navigation = useNavigation();
-  const dispatch = useDispatch();
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [visible, setVisible] = useState(false);
 
-  const setUserInfo = async (data) => {
-    await AsyncStorage.setItem("@auth", JSON.stringify(data.user));
-    await AsyncStorage.setItem("@token", data.token);
-    dispatch({
-      type: "LOGIN_SUCCESS",
-      user: data.user,
-      token: data.token,
-    });
-  };
   const submitHandler = async () => {
     try {
       setLoading(true);
       await axios
         .post(
-          "/user/login",
-          { email, password },
+          "/user/forgot-password",
+          { email, newPassword },
           {
             headers: {
               "Content-Type": "application/json",
@@ -54,18 +41,16 @@ const Login = () => {
           }
         )
         .then((res) => {
-          Alert.alert(res.data.message);
+          Alert.alert("Success", res.data.message);
           setEmail("");
-          setPassword("");
-          setUserInfo(res.data);
-          navigation.navigate("BottomTabs");
+          setNewPassword("");
+          navigation.navigate("Login");
         })
         .catch((error) => {
           alert(error.response.data.message);
         })
         .finally(() => setLoading(false));
     } catch (error) {
-      setLoading(false);
       console.log(error);
     }
   };
@@ -87,7 +72,17 @@ const Login = () => {
                 textAlign: "center",
               }}
             >
-              Login To your Account
+              Forgot password
+            </Text>
+            <Text
+              style={{
+                fontWeight: "bold",
+                fontSize: 13,
+                color: "#6a6a6a",
+                textAlign: "center",
+              }}
+            >
+              put your email and new password
             </Text>
           </View>
           <View style={{ marginTop: 10 }}>
@@ -158,29 +153,15 @@ const Login = () => {
                   width: 300,
                   fontSize: 16,
                 }}
-                value={password}
-                onChangeText={(txt) => setPassword(txt)}
+                value={newPassword}
+                onChangeText={(txt) => setNewPassword(txt)}
                 secureTextEntry={!visible}
                 placeholderTextColor={"grey"}
-                placeholder="Enter your Password"
+                placeholder="Enter a new password"
               />
             </View>
           </View>
-          <View
-            style={{
-              marginTop: 12,
-              flexDirection: "row",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
-          >
-            <Text
-              style={{ color: "#007fff", fontWeight: "500" }}
-              onPress={() => navigation.navigate("ForgotPassword")}
-            >
-              Forgot Password?
-            </Text>
-          </View>
+
           <View style={{ marginTop: 80 }} />
           <Pressable
             onPress={() => submitHandler()}
@@ -202,15 +183,15 @@ const Login = () => {
                 fontWeight: "bold",
               }}
             >
-              Login
+              Send
             </Text>
           </Pressable>
           <Pressable
             style={{ marginTop: 15 }}
-            onPress={() => navigation.navigate("Register")}
+            onPress={() => navigation.navigate("Login")}
           >
             <Text style={{ textAlign: "center", color: "grey", fontSize: 16 }}>
-              Don't have any account? Sign Up
+              back to Login?
             </Text>
           </Pressable>
         </KeyboardAvoidingView>
@@ -220,6 +201,6 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default ForgotPassword;
 
 const styles = StyleSheet.create({});
